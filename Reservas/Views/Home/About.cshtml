@@ -1,0 +1,202 @@
+﻿@{
+    ViewBag.Title = "About";
+}
+
+<h3>Reservas do Vilas di Bananas</h3>
+
+<div id="calendar" class="calendar"></div>
+
+<script>
+
+    var currentYear = new Date().getFullYear();
+
+    //function dataString(data) {
+
+    //    var mes = data.getMonth();
+    //    if (mes < 10) {
+    //        mes = "0" + mes;
+    //    }
+
+    //    var dia = data.getDay();
+    //    if (dia < 10) {
+    //        dia = "0" + dia;
+    //    }
+
+    //    return data.getFullYear() + mes + dia;
+
+    //}
+
+
+    $(document).ready(function () {
+        $("#calendar").calendar({
+            style: 'background',
+            language: 'pt',
+            customDayRenderer: function (element, date) {
+                var datenow = new Date();
+                datenow.setDate(datenow.getDate() - 1);
+
+                if (date.getTime() < datenow.getTime()) {
+                    $(element).closest('td').addClass('disabled');
+                }
+
+                //Verifica se a data minima para se fazer reserva
+                var mindiasreserva = 2;
+                if (mindiasreserva != '') {
+                    var datemin = new Date();
+                    datemin.setDate(datemin.getDate() + mindiasreserva);
+
+                    if (date.getTime() < datemin) {
+                        $(element).closest('td').addClass('disabled');
+                    }
+
+                }
+
+                //Verifica a data maxima de dias para se fazer a reserva
+                var maxdiasreserva = 90;
+                if (maxdiasreserva != '') {
+                    var datemax = new Date();
+                    datemax.setDate(datemax.getDate() + maxdiasreserva);
+
+                    if (date.getTime() > datemax) {
+                        $(element).closest('td').addClass('disabled');
+                    }
+
+                }
+
+                
+                //if (dataString(date) == dataString(new Date(currentYear, 6, 8))) {
+                if (date.getTime() == new Date(currentYear, 6, 8).getTime()) {
+//                    alert(dataString(date));
+                    $(element).css('background-color', 'red');
+                    $(element).css('color', 'white');
+                    $(element).css('border-radius', '15px');
+                }
+            },
+            clickDay: function (e) {
+                var dat = formatDate(e.date);
+                var datf = formatDateInverse(e.date);
+                var hold = 0;
+
+                bootbox.dialog({
+                    message: 'Esta data já foi reservada por outra pessoa! ' + dat + ' - ' + datf,
+                    title: 'Atenção',
+                    buttons: {
+                        main: {
+                            label: "Ok",
+                            className: "btn-primary",
+                            callback: function () {
+
+                            }
+                        },
+                    }
+                });
+
+
+
+                // Verifica se o dia já está marcado
+                var evday = $('#calendar').data('calendar').getEvents(e.date);
+
+                debugger;
+
+                for (i in evday) {
+                    if (evday[i].usuario == 1) {
+                        hold = 1;
+                        var url = '/agencia-virtual/efetuar-reservas?ids=' + ids + '&dia_todo=1&del_res=1&dat=' + datf;
+                        bootbox.dialog({
+                            message: 'Deseja cancelar suas reservas do dia <strong>(' + dat + ')</strong> ?',
+                            title: "Atenção",
+                            buttons: {
+                                success: {
+                                    label: "N&atilde;o",
+                                    className: "btn-danger",
+                                    callback: function () {
+                                        return;
+                                    }
+                                },
+                                main: {
+                                    label: "Sim",
+                                    className: "btn-primary",
+                                    callback: function () {
+
+                                        window.location.href = url;
+
+                                    }
+                                },
+                            }
+                        });
+                    }
+
+                    if (evday[i].usuario == 3) {
+                        hold = 1;
+                        bootbox.dialog({
+                            message: 'Esta data já foi reservada por outra pessoa !',
+                            title: 'Atenção',
+                            buttons: {
+                                main: {
+                                    label: "Ok",
+                                    className: "btn-primary",
+                                    callback: function () {
+
+                                    }
+                                },
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+
+        $("#calendar").data("calendar").setDisabledDays(
+            [
+            new Date(currentYear, 6, 2),
+            new Date(currentYear, 6, 3),
+            //new Date(currentYear, 6, 8),
+            new Date(currentYear, 6, 9),
+            new Date(currentYear, 6, 10),
+            new Date(currentYear, 6, 11),
+            new Date(currentYear, 6, 13),
+            new Date(currentYear, 6, 14),
+            new Date(currentYear, 6, 15)
+            ]);
+
+        var data = [];
+
+        var obj = {};
+        startdate = new Date(2017, 5, 15);
+        enddate = new Date(2017, 5, 15);
+        obj.startDate = startdate;
+        obj.endDate = enddate;
+        obj.color = "background-color: rgb(156, 183, 3)";
+        obj.usuario = "1";
+        data.push(obj)
+
+        $('#calendar').data('calendar').setDataSource(data);
+        
+    });
+
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [day, month, year].join('/');
+    }
+
+    function formatDateInverse(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+
+</script>
