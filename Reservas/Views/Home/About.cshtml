@@ -31,47 +31,47 @@
         $("#calendar").calendar({
             style: 'background',
             language: 'pt',
-            customDayRenderer: function (element, date) {
-                var datenow = new Date();
-                datenow.setDate(datenow.getDate() - 1);
+            //customDayRenderer: function (element, date) {
+            //    var datenow = new Date();
+            //    datenow.setDate(datenow.getDate() - 1);
 
-                if (date.getTime() < datenow.getTime()) {
-                    $(element).closest('td').addClass('disabled');
-                }
+            //    if (date.getTime() < datenow.getTime()) {
+            //        $(element).closest('td').addClass('disabled');
+            //    }
 
-                //Verifica se a data minima para se fazer reserva
-                var mindiasreserva = 2;
-                if (mindiasreserva != '') {
-                    var datemin = new Date();
-                    datemin.setDate(datemin.getDate() + mindiasreserva);
+            //    //Verifica se a data minima para se fazer reserva
+            //    var mindiasreserva = 2;
+            //    if (mindiasreserva != '') {
+            //        var datemin = new Date();
+            //        datemin.setDate(datemin.getDate() + mindiasreserva);
 
-                    if (date.getTime() < datemin) {
-                        $(element).closest('td').addClass('disabled');
-                    }
+            //        if (date.getTime() < datemin) {
+            //            $(element).closest('td').addClass('disabled');
+            //        }
 
-                }
+            //    }
 
-                //Verifica a data maxima de dias para se fazer a reserva
-                var maxdiasreserva = 90;
-                if (maxdiasreserva != '') {
-                    var datemax = new Date();
-                    datemax.setDate(datemax.getDate() + maxdiasreserva);
+            //    //Verifica a data maxima de dias para se fazer a reserva
+            //    var maxdiasreserva = 90;
+            //    if (maxdiasreserva != '') {
+            //        var datemax = new Date();
+            //        datemax.setDate(datemax.getDate() + maxdiasreserva);
 
-                    if (date.getTime() > datemax) {
-                        $(element).closest('td').addClass('disabled');
-                    }
+            //        if (date.getTime() > datemax) {
+            //            $(element).closest('td').addClass('disabled');
+            //        }
 
-                }
+            //    }
 
                 
-                //if (dataString(date) == dataString(new Date(currentYear, 6, 8))) {
-                if (date.getTime() == new Date(currentYear, 6, 8).getTime()) {
-//                    alert(dataString(date));
-                    $(element).css('background-color', 'red');
-                    $(element).css('color', 'white');
-                    $(element).css('border-radius', '15px');
-                }
-            },
+            //    //if (dataString(date) == dataString(new Date(currentYear, 6, 8))) {
+            //    if (date.getTime() == new Date(currentYear, 6, 8).getTime()) {
+            //        //                    alert(dataString(date));
+            //        $(element).css('background-color', 'red');
+            //        $(element).css('color', 'white');
+            //        $(element).css('border-radius', '15px');
+            //    }
+            //},
             clickDay: function (e) {
                 var dat = formatDate(e.date);
                 var datf = formatDateInverse(e.date);
@@ -143,22 +143,38 @@
                         });
                     }
                 }
-            }
+            },
+            dataSource: [
+                        {
+                            id: 0,
+                            name: 'Google I/O',
+                            location: 'San Francisco, CA',
+                            startDate: new Date(currentYear, 5, 28),
+                            endDate: new Date(currentYear, 5, 28)
+                        },
+                        {
+                            id: 1,
+                            name: 'Microsoft Convergence',
+                            location: 'New Orleans, LA',
+                            startDate: new Date(currentYear, 6, 16),
+                            endDate: new Date(currentYear, 6, 16)
+                        }
+                        ]
         });
 
 
-        $("#calendar").data("calendar").setDisabledDays(
-            [
-            new Date(currentYear, 6, 2),
-            new Date(currentYear, 6, 3),
-            //new Date(currentYear, 6, 8),
-            new Date(currentYear, 6, 9),
-            new Date(currentYear, 6, 10),
-            new Date(currentYear, 6, 11),
-            new Date(currentYear, 6, 13),
-            new Date(currentYear, 6, 14),
-            new Date(currentYear, 6, 15)
-            ]);
+        //$("#calendar").data("calendar").setDisabledDays(
+        //    [
+        //    new Date(currentYear, 6, 2),
+        //    new Date(currentYear, 6, 3),
+        //    //new Date(currentYear, 6, 8),
+        //    new Date(currentYear, 6, 9),
+        //    new Date(currentYear, 6, 10),
+        //    new Date(currentYear, 6, 11),
+        //    new Date(currentYear, 6, 13),
+        //    new Date(currentYear, 6, 14),
+        //    new Date(currentYear, 6, 15)
+        //    ]);
 
         var data = [];
 
